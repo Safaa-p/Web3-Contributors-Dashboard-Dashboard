@@ -1,0 +1,492 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SingularityNet Embassador program</title>
+
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- Tempus Dominus for Date Picker -->
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+</head>
+<body class="hold-transition sidebar-mini">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div class="wrapper">
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+    <ul class="navbar-nav ml-auto"> <!-- Push this ul to the right -->
+        <li class="nav-item">
+          <form action="{% url 'Signout' %}" method="post" class="form-inline">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Sign out</button>
+          </form>
+        </li>
+      </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="{% url 'members' %}" class="brand-link">
+        <span class="brand-text font-weight-light">SingularityNet Embassador</span>
+      </a>
+  
+
+    <div class="sidebar">
+      <nav class="mt-5">
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="{% url 'members' %}" class="nav-link">
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
+              </svg>
+              <p>Members</p>
+            </a>
+          </li>
+          <li class="nav-item menu-open">
+            <a href="#" class="nav-link active">
+              <i class="nav-icon fas fa-columns"></i>
+              <p>
+                Dashboard
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'workgroup' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p> Workgroups & Guilds</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'first' %}" class="nav-link active">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p> Workgroups </p>
+                </a>
+              </li>
+             
+            </ul>
+          </li>
+         
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- Content Wrapper -->
+  <div class="content-wrapper">
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Dashboard</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="card card-success">
+              <div class="card-header">
+                <h3 class="card-title">Workgroups & Guilds</h3>
+              </div>
+              <div class="card-body">
+                <form id="filters-form" method="get">
+                    <div class="form-group row">
+                      <!-- Date Range Inputs -->
+                      <div class="col-md-4">
+                        <label>Start Date:</label>
+                        <div class="input-group date" id="startdate" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#startdate" name="startdate" value="{{ start_date }}">
+                          <div class="input-group-append" data-target="#startdate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4">
+                        <label>End Date:</label>
+                        <div class="input-group date" id="enddate" data-target-input="nearest">
+                          <input type="text" class="form-control datetimepicker-input" data-target="#enddate" name="enddate" value="{{ end_date }}">
+                          <div class="input-group-append" data-target="#enddate" data-toggle="datetimepicker">
+                            <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-md-4 align-self-end">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                      </div>
+                    </div>
+                  
+                    <!-- Subgroup Filter -->
+                    <div class="form-group">
+                      <label>Subgroups:</label>
+                      <div class="row">
+                        {% for subgroup in subgroups %}
+                          <div class="col-md-4 col-lg-3">
+                            <div class="form-check">
+                              <input class="form-check-input" type="checkbox" name="subgroups[]" value="{{ subgroup }}" id="subgroup_{{ forloop.counter }}"
+                                     {% if subgroup in selected_subgroups %}checked{% endif %}>
+                              <label class="form-check-label" for="subgroup_{{ forloop.counter }}">
+                                {{ subgroup }}
+                              </label>
+                            </div>
+                          </div>
+                        {% endfor %}
+                        <div class="col-md-4 col-lg-3">
+                          <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="subgroups[]" value="all" id="subgroup_all"
+                                   {% if 'all' in selected_subgroups %}checked{% endif %}>
+                            <label class="form-check-label" for="subgroup_all">
+                              All
+                            </label>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+               
+                <div class="container-fluid">
+                    <p>Selected Date Range: <span id="selectedStartDate">{{ request.GET.startdate|default:"None" }}</span> to <span id="selectedEndDate">{{ request.GET.enddate|default:"None" }}</span></p>
+                    
+                    <div class="row mb-2"> <!-- Added mb-4 for margin-bottom -->
+                        <!-- Existing Workgroup Chart -->
+                        <div class="col-md-6">
+                            <canvas id="workgroupChart"></canvas>
+                        </div>
+                        <!-- New Task and Contributor Chart -->
+                        <div class="col-md-6">
+                            <canvas id="taskContributorChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 50px;"></div> <!-- Adjust the margin value as needed -->
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <canvas id="monthlyAgixMinsChart" width="400" height="200"></canvas>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="walletDistributionChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <script id="monthly-distribution-data" type="application/json">
+                    {{ monthly_distribution|safe }}
+                </script>
+                <script id="task-contributor-data" type="application/json">
+                    {{ task_contributor_data|safe }}
+                </script>
+                <script id="monthly-agix-mins-distribution-data" type="application/json">
+                    {{ monthly_agix_mins_distribution|safe }}
+                </script>
+                <script id="wallet-distribution-data" type="application/json">
+                    {{ wallet_distribution|safe }}
+                </script>
+                
+              </div>
+              <div class="card-footer">
+                <!-- Additional footer content if needed -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer">
+    <div class="float-right d-none d-sm-block">
+      <b>Version</b> 3.1.0
+    </div>
+    <strong>&copy; 2024 <a href="#"></a>.</strong> All rights reserved.
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<!-- Tempus Dominus Bootstrap 4 -->
+<script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+<script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+<script>
+   $(function () {
+    // Initialize date pickers
+    $('#startdate').datetimepicker({
+        format: 'YYYY-MM-DD',
+        date: "{{ request.GET.startdate|default:'' }}"
+    });
+    $('#enddate').datetimepicker({
+        format: 'YYYY-MM-DD',
+        useCurrent: false,
+        date: "{{ request.GET.enddate|default:'' }}"
+    });
+
+    $('#startdate').on('change.datetimepicker', function(e) {
+        $('#enddate').datetimepicker('minDate', e.date);
+        $('#selectedStartDate').text(e.date.format('YYYY-MM-DD')); // Update selected start date
+    });
+    $('#enddate').on('change.datetimepicker', function(e) {
+        $('#startdate').datetimepicker('maxDate', e.date);
+        $('#selectedEndDate').text(e.date.format('YYYY-MM-DD')); // Update selected end date
+    });
+   
+   
+    // Parse the embedded JSON data
+    var monthlyDistribution = JSON.parse(document.getElementById('monthly-distribution-data').textContent);
+    var taskContributorData = JSON.parse(document.getElementById('task-contributor-data').textContent);
+    var monthlyAgixMinsDistribution = JSON.parse(document.getElementById('monthly-agix-mins-distribution-data').textContent);
+    var walletDistributionData = JSON.parse(document.getElementById('wallet-distribution-data').textContent);
+
+    // First chart (Monthly Distribution: AGIX and MINS by Subgroup)
+    var subgroupLabels = [];
+    var agixData1 = [];
+    var minsData1 = [];
+
+    monthlyDistribution.forEach(function(item) {
+        subgroupLabels.push(item.subgroup);
+        agixData1.push(item.total_agix || 0); // Ensure there are no null values
+        minsData1.push(item.total_mins || 0); // Ensure there are no null values
+    });
+
+    var ctx1 = document.getElementById('workgroupChart').getContext('2d');
+    var workgroupChart = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: subgroupLabels,
+            datasets: [
+                {
+                    label: 'AGIX',
+                    data: agixData1,
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'MINS',
+                    data: minsData1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Monthly Distribution: AGIX and MINS by Subgroup'
+                }
+            },
+            scales: {
+                x: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Subgroup'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Value'
+                    }
+                }
+            }
+        }
+    });
+
+    // Second chart (Task & Contributor Distribution)
+    var taskLabels = [];
+    var taskData = [];
+    var contributorData = [];
+
+    taskContributorData.forEach(function(item) {
+        var monthYear = `${item.month.split("-")[0]}-${item.month.split("-")[1]}`;
+
+        if (!taskLabels.includes(monthYear)) {
+            taskLabels.push(monthYear);
+        }
+
+        taskData.push(item.task_count);
+        contributorData.push(item.contributor_count);
+    });
+
+    var ctx2 = document.getElementById('taskContributorChart').getContext('2d');
+    var taskContributorChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: taskLabels,
+            datasets: [
+                {
+                    label: 'Tasks',
+                    data: taskData,
+                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                    borderColor: 'rgba(255, 159, 64, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'Contributors',
+                    data: contributorData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Task & Contributor Distribution'
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Month'
+                    }
+                },
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Third chart (Monthly AGIX and MINS Distribution)
+    var agixMinsLabels = [];
+    var agixData2 = [];
+    var minsData2 = [];
+
+    monthlyAgixMinsDistribution.forEach(function(item) {
+        var monthYear = `${item.month.split("-")[0]}-${item.month.split("-")[1]}`;
+        agixMinsLabels.push(monthYear);
+        agixData2.push(item.total_agix);
+        minsData2.push(item.total_mins);
+    });
+
+    var ctx3 = document.getElementById('monthlyAgixMinsChart').getContext('2d');
+    var monthlyAgixMinsChart = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: agixMinsLabels,
+            datasets: [
+                {
+                    label: 'AGIX',
+                    data: agixData2,
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'MINS',
+                    data: minsData2,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Monthly AGIX and MINS Distribution'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    type: 'category',
+                    labels: agixMinsLabels
+                }
+            }
+        }
+    });
+
+    // Fourth chart - Wallet Distribution (AGIX and MINS)
+    var agixData3 = [];
+    var minsData3 = [];
+
+    walletDistributionData.forEach(function(item) {
+        agixData3.push(item.total_agix);
+        minsData3.push(item.total_mins);
+    });
+
+    var ctx4 = document.getElementById('walletDistributionChart').getContext('2d');
+    var walletDistributionChart = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: Array(walletDistributionData.length).fill(''), // Empty labels to avoid showing wallet addresses
+            datasets: [
+                {
+                    label: 'AGIX',
+                    data: agixData3,
+                    backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                    borderColor: 'rgba(255, 206, 86, 1)',
+                    borderWidth: 1
+                },
+                {
+                    label: 'MINS',
+                    data: minsData3,
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }
+            ]
+        },
+        options: {
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Wallet Distribution (AGIX and MINS)'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
+                x: {
+                    display: false // Hide the x-axis labels
+                }
+            }
+        }
+    });
+});
+
+    </script>
+    
+</body>
+</html>
